@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Date;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -28,6 +30,7 @@ public class ControlladorTest {
     @BeforeEach
     public void setUp() {
         saveCustomerService = mock(SaveCustomerService.class);
+        listCustomerService = mock(ListCustomerService.class);
         controlador = new Controllador(saveCustomerService,listCustomerService);
     }
 
@@ -41,6 +44,21 @@ public class ControlladorTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(1, responseEntity.getBody().intValue());
+    }
+
+    @Test
+    public void  testSearchCustomer(){
+        CustomerController customerController = new CustomerController(1,
+                "prueba","prueba","prueba",
+                "M","prueba@gmail.com",22345678,new Date());
+        when(listCustomerService.customerById(1)).thenReturn(customerController);
+
+        ResponseEntity<?> responseEntity = controlador.searchCustomer(1);
+
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(customerController, responseEntity.getBody());
+
     }
 
 }
